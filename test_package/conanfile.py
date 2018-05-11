@@ -1,7 +1,6 @@
 from conans import ConanFile, CMake, tools, RunEnvironment
 import os
 
-
 class TestPackageConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
@@ -11,7 +10,9 @@ class TestPackageConan(ConanFile):
         cmake.configure()
         cmake.build()
         
-    def test(self):
+    def test(self):     
+        if tools.cross_building(self.settings):
+            return
         with tools.environment_append(RunEnvironment(self).vars):
             if self.settings.os == "Windows":
                 self.run(os.path.join("bin","test_package"))
